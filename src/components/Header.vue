@@ -1,23 +1,16 @@
 <template>
 <div id="header">
     <div id="nav">
-        <a href="/" id="logo"><img :src="logo">A平台门户网站</a>
+        <a href="/" id="logo"><p class="iconfont icon-unicom"/>广东联通物联网</a>
         <p class="iconfont icon-menu" @click="showSider(true)"/>
     </div>
     <div id="sider">
         <!-- 用户信息 -->
         <p class="iconfont icon-close" @click="showSider(false)"></p>
         <div id="user">
-            <template v-if="userName === '点击登录'">
-                <a class="user-name" href="/login">{{ userName }}</a>
-                <a class="user-btn" href="/signup">注册账号</a>
-                <p class="user-btn" @click="changeUser(true)"
-                    style="color: hsla(0, 0%, 80%, 1); margin-left: 2rem">登录(测试用)</p>
-            </template>
-            <template v-else>
-                <p class="user-name">{{ userName }}</p>
-                <p class="user-btn" @click="changeUser(false)">注销</p>
-            </template>
+            <a class="user-name" href="/login" v-if="userName === '登录/注册'">{{ userName }}</a>
+            <p class="user-name" v-else>{{ userName }}</p>
+            <a class="user-btn" href="">控制台</a>
         </div>
         <!-- 菜单 -->
         <div id="menu">
@@ -72,10 +65,10 @@
                     <a class="menu menu-2nd" :href="menu2.link">{{ menu2.text }}</a>
                 </li>
             </ul>
-            <!-- 控制台 -->
-            <a id="menu6" class="menu menu-1st" href=""><span class="iconfont icon-console"/>{{ menu[6].text }}</a>
         </div>
-        
+        <div id="login" v-if="userName != '登录/注册'">
+            <a href="/login" id="login-btn">退出登录</a>
+        </div>
     </div>
     <div id="mask" @click="showSider(false)"></div>
     <div style="height: 5rem"></div>
@@ -86,7 +79,15 @@
 export default {
     mounted() {},
     methods: {
+        menuHeight() {
+            document.getElementById("menu").style.height = (this.userName === '登录/注册') ?
+                "calc(100% - " + (document.getElementById("user").offsetHeight + 1) + "px)" :
+                "calc(100% - " + (document.getElementById("user").offsetHeight + 51) + "px)"
+        },
         showSider(isShow) {
+            this.$nextTick(() => {
+                this.menuHeight()
+            })
             document.getElementById("sider").style.display = isShow ? "block" : "none"
             document.getElementById("mask").style.display = isShow ? "block" : "none"
             document.body.style.overflowY = isShow ? "hidden" : "auto"
@@ -119,7 +120,6 @@ export default {
                 { text: "生态合作", fold: true },
                 { text: "关于我们" },
                 { text: "联系我们", fold: true },
-                { text: "管理平台" },
             ],
             menuProduct: [
                 { text: "标准化应用产品", fold: true,
@@ -227,11 +227,11 @@ export default {
     padding-left: 1.6rem;
     align-items: center;
     font-size: 1.6rem;
-    white-space: nowrap;
 }
-#logo > img {
+#logo > p {
     margin-right: .8rem;
-    height: 1.6rem;
+    font-size: 2rem;
+    color: hsla(2, 74%, 45%, 1);
 }
 #nav > .iconfont{
     display: flex;
@@ -289,15 +289,21 @@ export default {
 }
 .user-btn {
     display: inline-block;
-    padding: 0;
-    font-size: 1.6rem;
+    padding: 1rem 0;
+    width: 100%;
+    font-size: 1.5rem;
+    text-align: center;
+    letter-spacing: .2rem;
+    border-radius: .3rem;
+    border: 1px solid hsla(200, 98%, 48%, 0.3);
     color: var(--primany);
+    background: var(--bg-primany);
 }
 
 /* 菜单 */
 #menu {
-    padding-bottom: 2rem;
-    height: calc(100% - 12.8rem);
+    /* padding-bottom: 2rem; */
+    /* height: 100%; */
     overflow-y: auto;
 }
 .menu {
@@ -349,5 +355,25 @@ export default {
     font-size: 1.5rem;
     background: var(--dark-96);
     z-index: 1;
+}
+
+/* 登录 */
+#login {
+    display: flex;
+    height: 4rem;
+    width: 100%;
+    background: white;
+}
+#login-btn {
+    display: inline-block;
+    margin: auto 2rem;
+    width: calc(100% - 4rem);
+    text-align: center;
+    font-size: 1.5rem;
+    line-height: 4rem;
+    font-weight: 400;
+    white-space: nowrap;
+    color: var(--dark-60);
+    transition: all ease, 0.3s;
 }
 </style>
